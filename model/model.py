@@ -73,3 +73,8 @@ class Model:
             costo += self.grafo[lista_archi_tutti[i]][lista_archi_tutti[i+1]]["weight"]
         return costo
 
+    def get_ciclo_archi(self, lista):
+        listabella = []
+        for i in range(len(lista)-1):
+            listabella.append((lista[i], lista[i+1],self.grafo[lista[i]][lista[i+1]]['weight']))
+        return listabella

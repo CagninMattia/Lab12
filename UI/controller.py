@@ -18,14 +18,26 @@ class Controller:
 
 
     def handle_graph(self, e):
-        anno = int(self._view.ddyear.value)
+        anno = self._view.ddyear.value
         nazione = self._view.ddcountry.value
-        self._model.crea_grafo(nazione, anno)
-        num_nodi = self._model.num_nodi()
-        num_archi = self._model.num_archi()
-        self._view.txt_result.controls.append(ft.Text(f"Numero nodi: {num_nodi}"))
-        self._view.txt_result.controls.append(ft.Text(f"Numero archi: {num_archi}"))
-        self._view.update_page()
+        if anno is not None and nazione is not None:
+            int(anno)
+            self._view.btn_volume.disabled = False
+            self._view.txtN.disabled = False
+            self._view.btn_path.disabled = False
+            self._view.txt_result.controls.clear()
+            self._view.update_page()
+            self._model.crea_grafo(nazione, anno)
+            num_nodi = self._model.num_nodi()
+            num_archi = self._model.num_archi()
+            self._view.txt_result.controls.append(ft.Text(f"Numero nodi: {num_nodi}"))
+            self._view.txt_result.controls.append(ft.Text(f"Numero archi: {num_archi}"))
+            self._view.update_page()
+        else:
+            self._view.txt_result.controls.clear()
+            self._view.txt_result.controls.append(ft.Text("Selezionare tutti e due i campi. "))
+            self._view.update_page()
+
 
 
 
@@ -37,9 +49,23 @@ class Controller:
 
 
     def handle_path(self, e):
-        numero = int(self._view.txtN.value)
-        costo, ciclo = self._model.get_ciclo_max(numero)
-        print(costo)
-        for n in ciclo:
-            print(n)
+        numero = self._view.txtN.value
+        self._view.txtOut3.controls.clear()
+        self._view.update_page()
+        try:
+            int(numero)
+        except ValueError:
+            self._view.txtOut3.controls.clear()
+            self._view.txtOut3.controls.append(ft.Text("Inserisci un numero intero. "))
+            self._view.update_page()
+            return
+        costo, ciclo_lista = self._model.get_ciclo_max(int(numero))
+        lista_archi = self._model.get_ciclo_archi(ciclo_lista)
+        self._view.txtOut3.controls.append(ft.Text(f"Peso cammino massimo: {costo}"))
+        for n in lista_archi:
+            self._view.txtOut3.controls.append(ft.Text(f"{n[0]} --> {n[1]} Peso: {n[2]}"))
+        self._view.update_page()
+
+
+
 
